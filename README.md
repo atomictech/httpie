@@ -1,6 +1,6 @@
 
 <p align="center"><h1 align="center">
-  Httpie
+  Httpie (fork from MyUnisoft)
 </h1>
 
 <p align="center">
@@ -29,9 +29,11 @@
 
 The package is inspired by lukeed [httpie](https://github.com/lukeed/httpie) (The use is relatively similar). This package use new Node.js http client [undici](https://github.com/nodejs/undici) under the hood.
 
+This fork is an opinionated version of handling request body, especially JSON ones, and that allow to properly delegate all other body types to `undici` (like `FormData` bodies, for example, that was not properly handled).
+
 ## 🔬 Features
 
-- Automatically handles JSON requests and responses.
+- Automatically handles JSON requests (through a `json(bodyObj)` call) and responses.
 - Includes aliases for common HTTP verbs: `get`, `post`, `put`, `patch`, and `del`.
 - Able to automatically detect domains and paths to assign the right Agent (use a LRU cache to avoid repetitive computation).
 - Allows to use an accurate rate-limiter like `p-ratelimit` with the `limit` option.
@@ -56,9 +58,9 @@ Light with seriously maintained dependencies:
 This package is available in the Node Package Repository and can be easily installed with [npm](https://docs.npmjs.com/getting-started/what-is-npm) or [yarn](https://yarnpkg.com).
 
 ```bash
-$ npm i @myunisoft/httpie
+$ npm i @atomictech/httpie
 # or
-$ yarn add @myunisoft/httpie
+$ yarn add @atomictech/httpie
 ```
 
 ## 📚 Usage example
@@ -66,18 +68,18 @@ $ yarn add @myunisoft/httpie
 The MyUnisoft httpie client is very similar to lukeed httpie http client.
 
 ```js
-import * as httpie from "@myunisoft/httpie";
+import * as httpie from "@atomictech/httpie";
 
 try {
   const { data } = await httpie.get("https://jsonplaceholder.typicode.com/posts");
   console.log(data);
-  
+
   const response = await httpie.post("https://jsonplaceholder.typicode.com/posts", {
-    body: {
+    body: httpie.json({
       title: "foo",
       body: "bar",
       userId: 1
-    }
+    })
   });
 
   console.log(response.statusCode);

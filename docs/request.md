@@ -30,7 +30,7 @@ The first **method** argument take an [HTTP Verb](https://developer.mozilla.org/
 
 The options allow you to quickly authenticate and add additional headers:
 ```js
-import { request } from "@myunisoft/httpie";
+import { request } from "@atomictech/httpie";
 
 const { data } = await request("GET", "https://test.domain.fr/user/info", {
   authorization: "Token here",
