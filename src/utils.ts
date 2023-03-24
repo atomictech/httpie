@@ -77,6 +77,12 @@ export function createHeaders(options: Partial<Pick<ReqOptions, "headers" | "aut
   return headers;
 }
 
+class JsonBody extends String {}
+
+export function json(object: any) {
+  return new JsonBody(JSON.stringify(object)) as string;
+}
+
 export function createBody(body: undefined): undefined;
 export function createBody(body: any, headers?: IncomingHttpHeaders): string | Buffer;
 
@@ -87,22 +93,13 @@ export function createBody(body: any, headers: IncomingHttpHeaders = {}): string
   if (typeof body === "undefined") {
     return void 0;
   }
-  if (isAsyncIterable(body)) {
-    return body;
-  }
-
-  let finalBody = body;
-  if (body instanceof URLSearchParams) {
-    headers["content-type"] = "application/x-www-form-urlencoded";
-    finalBody = body.toString();
-  }
-  else if (typeof body === "object" && !Buffer.isBuffer(body)) {
+  if (body instanceof JsonBody) {
     headers["content-type"] = "application/json";
-    finalBody = JSON.stringify(body);
-  }
-  headers["content-length"] = String(Buffer.byteLength(finalBody));
 
-  return finalBody;
+    return body.toString();
+  }
+
+  return body;
 }
 
 /**

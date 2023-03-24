@@ -76,30 +76,26 @@ describe("createBody", () => {
     const body = {
       foo: "bar"
     };
+    const bodyJson = Utils.json(body);
     const bodyStr = JSON.stringify(body);
     const headerRef: IncomingHttpHeaders = {};
 
-    const result = Utils.createBody(body, headerRef);
+    const result = Utils.createBody(bodyJson, headerRef);
 
     expect(result).toStrictEqual(bodyStr);
-    expect(Object.keys(headerRef).length).toStrictEqual(2);
+    expect(Object.keys(headerRef).length).toStrictEqual(1);
     expect(headerRef["content-type"]).toStrictEqual("application/json");
-    expect(headerRef["content-length"]).toStrictEqual(String(Buffer.byteLength(bodyStr)));
   });
 
   it("should be able to prepare a FORM (URLEncoded) body", () => {
     const body = new URLSearchParams({
       foo: "bar"
     });
-    const bodyStr = body.toString();
     const headerRef: IncomingHttpHeaders = {};
 
     const result = Utils.createBody(body, headerRef);
 
-    expect(result).toStrictEqual(bodyStr);
-    expect(Object.keys(headerRef).length).toStrictEqual(2);
-    expect(headerRef["content-type"]).toStrictEqual("application/x-www-form-urlencoded");
-    expect(headerRef["content-length"]).toStrictEqual(String(Buffer.byteLength(bodyStr)));
+    expect(result).toStrictEqual(body);
   });
 
   it("should be able to prepare a Buffer body", () => {
@@ -109,8 +105,6 @@ describe("createBody", () => {
     const result = Utils.createBody(body, headerRef);
 
     expect(result).toStrictEqual(body);
-    expect(Object.keys(headerRef).length).toStrictEqual(1);
-    expect(headerRef["content-length"]).toStrictEqual(String(Buffer.byteLength(body)));
   });
 
   it("should return the ReadableStream without any transformation", () => {

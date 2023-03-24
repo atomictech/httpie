@@ -2,7 +2,7 @@
 import { FastifyInstance } from "fastify";
 
 // Import Internal Dependencies
-import { get, post, put, patch, del } from "../src/index";
+import { get, post, put, patch, del, json } from "../src/index";
 
 // Helpers and mock
 import { createServer } from "./server/index";
@@ -117,7 +117,9 @@ describe("http.post", () => {
       userId: 1
     };
 
-    const { data } = await post<typeof body & { userId: number }>("https://jsonplaceholder.typicode.com/posts", { body });
+    const { data } = await post<typeof body & { userId: number }>("https://jsonplaceholder.typicode.com/posts", {
+      body: json(body)
+    });
     expect(typeof data.userId).toStrictEqual("number");
     expect(data).toMatchObject(body);
   });
@@ -133,7 +135,9 @@ describe("http.put", () => {
       userId: 1
     };
 
-    const { data } = await put<typeof body & { userId: number }>("https://jsonplaceholder.typicode.com/posts/1", { body });
+    const { data } = await put<typeof body & { userId: number }>("https://jsonplaceholder.typicode.com/posts/1", {
+      body: json(body)
+    });
     expect(data).toEqual(body);
   });
 });
@@ -147,7 +151,7 @@ describe("http.patch", () => {
     };
 
     const { data } = await patch<typeof body & { userId: number }>("https://jsonplaceholder.typicode.com/posts/1", {
-      body: { title: "foo" }
+      body: json({ title: "foo" })
     });
     expect(data).toMatchObject(body);
   });
@@ -156,7 +160,7 @@ describe("http.patch", () => {
 describe("http.del", () => {
   it("should DELETE data on jsonplaceholder API", async() => {
     const { statusCode } = await del<any>("https://jsonplaceholder.typicode.com/posts/1", {
-      body: { title: "foo" }
+      body: json({ title: "foo" })
     });
     expect(statusCode).toStrictEqual(200);
   });
