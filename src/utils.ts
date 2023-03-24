@@ -42,7 +42,7 @@ export function getEncodingCharset(charset = kDefaultEncodingCharset): BufferEnc
  */
 export async function parseUndiciResponse<T>(response: Dispatcher.ResponseData): Promise<T | string> {
   const { type, parameters } = contentType.parse(
-    response.headers["content-type"] ?? kDefaultMimeType
+    typeof response.headers["content-type"] === "string" ? response.headers["content-type"] : kDefaultMimeType
   );
   response.body.setEncoding(getEncodingCharset(parameters.charset));
 
